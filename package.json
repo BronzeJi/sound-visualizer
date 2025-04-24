@@ -2,7 +2,7 @@
   "name": "sound-visualizer",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://bronzeji.github.io/sound-visualizer"
+  "homepage": "https://bronzeji.github.io/sound-visualizer",
   "dependencies": {
     "@react-three/drei": "^9.56.17",
     "@react-three/fiber": "^8.13.6",
