@@ -10,8 +10,8 @@ function DraggableSphere({ position, setPosition, color }) {
 
   useFrame(({ mouse }) => {
     if (dragging) {
-      const newX = mouse.x * 1;
-      const newZ = mouse.y * -1;
+      const newX = mouse.x * 6;
+      const newZ = mouse.y * -6;
       setPosition([newX, 0.5, newZ]);
     }
     ref.current.position.set(...position);
@@ -32,7 +32,7 @@ function DraggableSphere({ position, setPosition, color }) {
 
 function RoomScene({ sourcePos, setSourcePos, receiverPos, setReceiverPos }) {
   return (
-    <Canvas camera={{ position: [0, 2.5, 3], fov: 50 }} style={{ background: '#fafafa' }}>
+    <Canvas camera={{ position: [4, 2.5, 3], fov: 80 }} style={{ background: '#fafafa' }}>
       <ambientLight intensity={0.5} />
       <pointLight position={[10, 10, 10]} />
 
@@ -97,29 +97,31 @@ function App() {
 
   
   const loadIRAndPlay = async (index) => {
+
+
     try {
-      const irPath = `/media/ir/ir_${index+1}44.wav`;
-      const audioPath = "/media/Summertime.mp3";
 
+
+      const irPath = `https://bronzeji.github.io/sound-visualizer/media/ir/ir_${index+1}44.wav`;
+      const audioPath = "https://bronzeji.github.io/sound-visualizer/media/Summertime.mp3";
       console.log("Path loaded",irPath);
-      
+
       const conv = new Tone.Convolver(irPath).toDestination();
-      console.log("To load ir");
-
-      
-      const pl = new Tone.Player({ url: audioPath, autostart: true });
-
-      
-      pl.connect(conv);
+      //await conv.load(irPath); // make sure IR is loaded
       console.log("IR loaded");
+      console.log(window.location.href); // current path
+
+      const pl = new Tone.Player({ url: audioPath, autostart: true });
+      //const pl = new Tone.Player(audioPath);
+      //await pl.load();
+      pl.connect(conv);
+      console.log("AudioContext state:", Tone.context.state);
+
       setConvolver(conv);
       setPlayer(pl);
-      
-      /*await Tone.start();
-      await Tone.loaded();
-      console.log("IR loaded");
+      player.stop();
+      //pl.start();
 
-      const player = new Tone.Player({ url: irPath, autostart: true }).toDestination();*/
     } catch (error) {
       console.error("Error loading IR or audio:", error);
     }
@@ -150,12 +152,15 @@ function App() {
         ))}
         <button
           onClick={async () => {
+            player.stop();
             await Tone.start();
-            const testPlayer = new Tone.Player("/media/Summertime.mp3").toDestination();
+            const testPlayer = new Tone.Player("https://bronzeji.github.io/sound-visualizer/media/Summertime.mp3").toDestination();
             testPlayer.autostart = true;
+
           }}
-          style={{ margin: "5px", background: "#d0ffd0" }}
+          style={{ margin: "5px", background: "#f0f0f0" }}
         >
+          Play dry sound
         </button>
 
         <div>Source Position: {sourcePos.map(n => n.toFixed(2)).join(", ")}</div>
